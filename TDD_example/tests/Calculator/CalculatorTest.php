@@ -8,7 +8,7 @@ class CalculatorTest extends TestCase {
     #[DataProvider('additionProvider')]
     public function testSum($a, $b, $expected) {
         $calculette = new Calculator;
-        $this->assertSame($expected, $a + $b);
+        $this->assertEquals($expected, $calculette->sum($a, $b));
     }
 
     public static function additionProvider() {

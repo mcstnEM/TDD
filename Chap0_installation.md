@@ -87,7 +87,7 @@ Vous pouvez ajouter les paramettres suivant dans votre `composer.json` :
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\Tests": "tests/"
+            "App\\Tests\\": "tests/"
         }
     },
 }
@@ -165,7 +165,7 @@ class UserTest extends TestCase {
 }
 ```
 
-:point_up: À savoir quand vous crée un test, la syntaxe `testMethod` est une conviention à respecter, sinon PHPUnit ne trouvera pas votre test.  
+:point_up: À savoir quand vous crée un test, la syntaxe `testMethod` est une convention à respecter, sinon PHPUnit ne trouvera pas votre test.  
 Alternativement vous pouvez utiliser l'attribut Test si vous voulez vraiment utiliser un nom particulier pour la méthode :
 
 ```php
@@ -200,24 +200,37 @@ class ClassTest extends TestCase {
 
 Il existe plein d'autres méthodes d'assertion que vous pourrez découvrir dans la [doc de PHPUnit](https://docs.phpunit.de/en/11.0/assertions.html).
 
-Vous avez par exemple `TestCase::assertEquals()` qui vous permet de tester si deux valeurs sont égal et notamment si un itérable possèdent les propriétés attendues :
+Vous avez par exemple `TestCase::asserEquals()` qui fait une comparaison sans se soucier du type.
 
-```php
-class UserTest extends TestCase {
+En PHPUnit, `assertSame()` et `assertEquals()` sont deux méthodes utilisées pour effectuer des assertions dans les tests unitaires, mais ils diffèrent dans la manière dont ils comparent les valeurs.
 
-    public function testHello(): void
-    {
-        $user = new User('Jeremi', 'Duffay');
+1. `assertSame($expected, $actual)` :
+   - La méthode `assertSame()` compare les valeurs et les types de deux variables.
+   - Elle réussit si les valeurs des deux variables sont égales et si elles sont du même type (identiques).
+   - Cela signifie que si les valeurs sont égales, mais les types sont différents, l'assertion échouera.
 
-        $this->assertEquals([
-            "name" => "Jeremi",
-            "surname" => "Duffay"
-        ], $user->idCard);
-    }
-}
-```
+   Exemple :
+   ```php
+   $this->assertSame(42, 42);       // Assertion réussie (valeurs et types identiques)
+   $this->assertSame(42, '42');     // Assertion échoue (types différents)
+   $this->assertSame(42, 43);       // Assertion échoue (valeurs différentes)
+   ```
 
-## La méthode setUp et tearDown
+2. `assertEquals($expected, $actual)` :
+   - La méthode `assertEquals()` compare les valeurs de deux variables sans tenir compte de leur type.
+   - Elle réussit si les valeurs des deux variables sont égales, même si les types sont différents.
+   - Cela signifie que si les valeurs sont égales, l'assertion réussira, même si les types sont différents.
+
+   Exemple :
+   ```php
+   $this->assertEquals(42, 42);    // Assertion réussie (valeurs identiques, types différents)
+   $this->assertEquals(42, '42');  // Assertion réussie (valeurs identiques, types différents)
+   $this->assertEquals(42, 43);    // Assertion échoue (valeurs différentes)
+   ```
+
+En résumé, la principale différence réside dans la prise en compte ou non du type lors de la comparaison. Utilisez `assertSame()` lorsque vous voulez vous assurer que les valeurs sont identiques en termes de valeur et de type, et utilisez `assertEquals()` lorsque vous souhaitez comparer les valeurs indépendamment de leur type.
+
+## Les méthodes `setUp()` et `tearDown()`
 
 La méthode **setUp** dans la classe MessageTest est appelée en premier avant tous les autres tests, et est appelée avant chaque test.
 
@@ -355,7 +368,7 @@ class ExceptionTest extends TestCase
     public function testException()
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->model->save($user); // $user n'est pas, par exemple, un argument attenu, nauvais type, et dans la méthode save on lève dans ce cas une exception 
+        $this->model->save($user); // $user n'est pas, par exemple, un argument attendu, nauvais type, et dans la méthode save on lève dans ce cas une exception 
     }
 }
 ```
