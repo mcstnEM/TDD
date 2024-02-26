@@ -170,7 +170,7 @@ Alternativement vous pouvez utiliser l'attribut Test si vous voulez vraiment uti
 
 ```php
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Attributes\Test;
+use PHPUnit\Framework\Attributes\Test;
 use App\User;
 
 class UserTest extends TestCase {
