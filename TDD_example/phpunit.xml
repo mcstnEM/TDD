@@ -6,7 +6,10 @@
 >
     <testsuites>
         <testsuite name="User Tests">
-            <directory>tests/</directory>
+            <file>tests/UserTest.php</file>
+        </testsuite>
+        <testsuite name="Calculator Tests">
+            <directory>tests/Calculator/</directory>
         </testsuite>
     </testsuites>
 </phpunit>
