@@ -1,5 +1,4 @@
 <?php
-
 namespace App;
 
 class Cart {
@@ -34,18 +33,9 @@ class Cart {
         }
         return $total;
     }
-}
 
-class Product {
-    public function __construct(private string $name, private float $price, private int $quantity) {}
-    
-    public function getName(): string
+    public function getProducts(): array
     {
-        return $this->name;
-    }
-
-    public function getTotalPrice(): float 
-    {
-        return $this->price * $this->quantity;
+        return $this->products;
     }
 }
