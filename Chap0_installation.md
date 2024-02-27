@@ -282,11 +282,9 @@ class Message
 {
 
     public function __construct(
-        private string $lang = 'en',  
-        private array $translates = ['fr' => 'Bonjour les gesn!', 'en' => 'Hello World!']
-        )
-    {
-    }
+            private string $lang = 'en',  
+            private array $translates = ['fr' => 'Bonjour les gesn!', 'en' => 'Hello World!']
+        ) {}
 
     public function get(): string
     {
@@ -304,35 +302,50 @@ class Message
 Lancez maintenant le test suivant en console à la racine du dossier Message :
 
 ```bash
-phpunit
+vendor/bin/phpunit
 ```
 
 Indication : si tous les tests sont bons alors, ils seront verts.
 
 **Question changez la langue dans un test supplémentaire et vérifiez que la classe pour la version fr renvoie bien "Bonjour tout le monde!." Si ce n'est pas le cas corriger le code métier pour faire passer le test.**
 
-## 01 Exercice DotEnv
+## Sauter un test sous condition
 
-1. Installez la dépendance DotEnv et définissez à la racine du projet un fichier `.env` dans lequel vous définissez la variable d'environnement suivante :
+Si votre test demande une connexion à une base de données, il serait inutile d'exécuter un test qui requière de communiquer avec cette base de données s'il n'est pas possible de s'y connecter.
 
-```txt
-LANGUAGE="fr"
+```php
+use PHPUnit\Framework\TestCase;
+
+final class DatabaseTest extends TestCase
+{
+    protected function setUp(): void
+    {
+        # On vérifie si l'extention pgsql est bien activé.
+        if (!extension_loaded('pgsql')) {
+            # Si elle ne l'ai pas, alors le test ne sera pas exécuté
+            $this->markTestSkipped(
+                'The PostgreSQL extension is not available',
+            );
+        }
+    }
+
+    # testConnection sera concerné comme tout les tests de cette class
+    public function testConnection(): void
+    {
+        // ...
+    }
+}
 ```
-
-Indication : dépôt de la dépendance qu'il faut installer : [https://github.com/vlucas/phpdotenv](https://github.com/vlucas/phpdotenv)
-
-2. Dans le bootstrap des tests importez les variables d'environnement.
-
-3. Testez en fonction de la valeur `LANGUAGE = fr` ou en le message de la méthode get respectivement **"Hello World!"** ou **"Bonjour les gens!"**.
-
 
 ## Configuration des tests fournisseurs de données et exceptions
 
 Nous pouvons allez plus loin dans la configuration des tests, pour bien comprendre le framework de tests nous allons présenter d'autres techniques. Nous pouvons en effet fournir aux tests des valeurs arbitraires.
 
-Un fournisseur de tests devra être une méthode publique et retourner soit un tableau, soit un objet qui implémente une interface Iterator. 
+Un fournisseur de tests devra être une méthode statique publique et retourner soit un tableau, soit un objet qui implémente une interface Iterator. 
 
-On utilise 
+Autrement dit la méthode static doit retourner un itérateur.
+
+On utilise l'attribut DataProvider() dans lequel nous renseignons le fournisseur de tests :
 
 ```php
 use PHPUnit\Framework\TestCase;
@@ -367,13 +380,15 @@ class ExceptionTest extends TestCase
 {
     public function testException()
     {
+        # On déclare le type d'exception attendu
         $this->expectException(InvalidArgumentException::class);
-        $this->model->save($user); // $user n'est pas, par exemple, un argument attendu, nauvais type, et dans la méthode save on lève dans ce cas une exception 
+        # On déclenche volontairement une erreur pour obtenir l'exception attendue
+        $this->model->save($user);
     }
 }
 ```
 
-## 02 Exercice Calculator
+## 01 Exercice Calculator
 
 Le but de cet exercice et de vous faire appréhender l'organisation des tests.
 
@@ -381,9 +396,9 @@ Dans la suite des tests on prendra comme précision 2 chiffres après la virgule
 
 Dans les questions 1 et 2 vous testerez uniquement la classe Calculator. Les classes dans le dossier Model seront testées à partir de la question 4.
 
-1. Utilisez le code dans le dossier Exercice_02_Calculator. Installez le projet avec ces dépendance. 
+1. Utilisez le code dans le dossier 01_exercice_calculator. Installez le projet avec ces dépendance. 
 
-*Attention, assertEquals et assertSame sont différents. La deuxième méthode vérifie le type strictement.*
+*Attention, `assertEquals()` et `assertSame()` sont différents. La deuxième méthode vérifie le type strictement.*
 
 2. Testez la classe Calculator en utilisant les concepts Provider (passer un tableau de valeurs ) et d'exception décrit précédemment.
 
@@ -397,11 +412,11 @@ Dans les questions 1 et 2 vous testerez uniquement la classe Calculator. Les cla
 
 *Dans la suite tous les résultats sont des entiers qui n'ont pas de partie décimale, voyez le type NumberString qui est retourné dans l'addition et la division.*
 
-4. Testez maintenant la partie Model dans le dossier src. Réorganisez le fichier XML de configuration des tests comme suit, n'utilisez pas de Provider pour cette partie vous testerez uniquement add et divisor comme dans les exemples ci-après.
+1. Testez maintenant la partie Model dans le dossier src. Réorganisez le fichier XML de configuration des tests comme suit, n'utilisez pas de Provider pour cette partie vous testerez uniquement add et divisor comme dans les exemples ci-après.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="tests/autoload.php"
+<phpunit bootstrap="tests/bootstrap.php"
          colors="true">
     <testsuites>
         <testsuite name="Calculator">
@@ -412,6 +427,16 @@ Dans les questions 1 et 2 vous testerez uniquement la classe Calculator. Les cla
         </testsuite>
     </testsuites>
 </phpunit>
+```
+
+Structure du dossier tests :
+
+```txt
+tests
+    ├── CalculatorTest.php
+    ├── Model
+    │   └── ModelTest.php
+    └── bootstrap.php
 ```
 
 Faites les trois tests suivants :
@@ -442,6 +467,72 @@ public function testExceptionDivisor()
 
 }
 ```
+
+Bien sûr, voici une version étendue de l'exercice avec quelques étapes supplémentaires :
+
+---
+
+## 02. Exercice : Génération de Messages Aléatoires
+
+### Objectif :
+Créer une classe `MessageGenerator` qui génère des messages aléatoires et ajouter des fonctionnalités supplémentaires.
+
+> [!TIP]
+> Vous allez pouvoir vous aider de la documentation de phpunint. Sur le lien suivant vous trouverez les différentes méthode d'assertion disponible :
+> 
+> https://docs.phpunit.de/en/11.0/assertions.html
+
+### Étapes :
+
+1. **Classe `MessageGenerator` :**
+   - Créez une classe `MessageGenerator` avec une méthode `generateMessage()` qui génère un message aléatoire à chaque appel.
+   - Les messages peuvent être choisis parmi un ensemble prédéfini de messages.
+
+2. **Ajout de Nouvelles Fonctionnalités :**
+   - Ajoutez une méthode `getMessages()` qui retourne l'ensemble prédéfini de messages.
+   - Ajoutez une méthode `addMessage($message)` qui permet d'ajouter un nouveau message à l'ensemble.
+   - Ajoutez une méthode `removeMessage($message)` qui permet de supprimer un message de l'ensemble.
+
+3. **Tests avec PHPUnit :**
+   - Écrivez des tests PHPUnit pour la classe `MessageGenerator`.
+   - Testez la méthode `generateMessage()` pour vous assurer qu'elle génère un message chaque fois qu'elle est appelée.
+   - Testez la méthode `getMessages()` pour vous assurer qu'elle renvoie l'ensemble prédéfini de messages.
+   - Testez les méthodes `addMessage()` et `removeMessage()` pour vérifier l'ajout et la suppression corrects des messages.
+
+### Classe MessageGenerator :
+
+```php
+class MessageGenerator {
+    private $messages = [
+        'Bonjour !',
+        'Bienvenue',
+        'Ceci est un message aléatoire',
+        'PHPUnit est amusant',
+        'Testez avec précaution',
+    ];
+
+    public function generateMessage() {
+        // ...code
+    }
+
+    public function getMessages() {
+        // ...code
+    }
+
+    public function addMessage($message) {
+        // ...code
+    }
+
+    public function removeMessage($message) {
+        // ...code
+    }
+}
+```
+
+### Conseils :
+- Utilisez la fonction `array_rand()` pour choisir un indice aléatoire dans le tableau des messages.
+- Assurez-vous que les méthodes `addMessage()` et `removeMessage()` fonctionnent correctement en utilisant les assertions appropriées.
+- Utilisez `assertIsArray()` pour vérifier que `getMessages()` renvoie bien un tableau.
 
 ## 03 TP Fixtures parti 1/2
 
