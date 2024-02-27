@@ -533,6 +533,7 @@ class MessageGenerator {
 - Utilisez la fonction `array_rand()` pour choisir un indice aléatoire dans le tableau des messages.
 - Assurez-vous que les méthodes `addMessage()` et `removeMessage()` fonctionnent correctement en utilisant les assertions appropriées.
 - Utilisez `assertIsArray()` pour vérifier que `getMessages()` renvoie bien un tableau.
+
 ## 03. Exercice: Créer un panier
 
 ### Partie 1: Première Classe
