@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use App\Cart;
+use App\Storage;
 use App\Product;
 
 class CartTest extends TestCase {
@@ -10,7 +11,8 @@ class CartTest extends TestCase {
 
     public function setUp(): void
     {
-        $this->cart = new Cart;
+        $storage = new Storage;
+        $this->cart = new Cart($storage);
         $this->product = new Product('Laptop', 1800.0, '2');
     }
 
