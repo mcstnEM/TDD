@@ -54,3 +54,16 @@
    - [ ] a) `InvalidArgumentException::class`
    - [x] b) Le type de l'exception attendu
    - [ ] c) Une exception de type `DivisionByZeroError`
+
+
+# Réponses :
+1. b) PHPUnit
+2. c) En utilisant la configuration du fichier `phpunit.xml`.
+3. b) En déclarant une méthode statique et en utilisant l'attribut `DataProvider`.
+4. a) `assertEquals()` compare les valeurs sans tenir compte du type, tandis que `assertSame()` compare les valeurs et les types.
+5. c) Dans le fichier `bootstrap.php`.
+6. b) En utilisant `expectException()` avec le nom de la classe d'exception.
+7. a) Il active le mode "TestDox" qui génère une documentation basée sur les noms des méthodes de test.
+8.  d) `phpunit`
+9.  b) Après
+10. b) Le type de l'exception attendu

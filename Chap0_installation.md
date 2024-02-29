@@ -534,6 +534,37 @@ class MessageGenerator {
 - Assurez-vous que les méthodes `addMessage()` et `removeMessage()` fonctionnent correctement en utilisant les assertions appropriées.
 - Utilisez `assertIsArray()` pour vérifier que `getMessages()` renvoie bien un tableau.
 
+### 02.2 Exercice: Ajouter un compteur de message à la classe `MessageGenerator()` et ajouté la méthode de test de la nouvelle fonctionnalité.
+
+### 02.3 Exercice: Filtrage de Messages par Mot-clé
+
+#### Objectif :
+Ajouter une nouvelle fonctionnalité à la classe `MessageGenerator` permettant de filtrer les messages par un mot-clé donné.
+
+#### Étapes :
+
+1. **Nouvelle Fonctionnalité :**
+   - Ajoutez une méthode `filterMessagesByKeyword($keyword)` qui prend un mot-clé en paramètre et retourne un tableau contenant uniquement les messages qui contiennent ce mot-clé.
+
+2. **Tests avec PHPUnit :**
+   - Écrivez des tests PHPUnit pour la nouvelle méthode `filterMessagesByKeyword()`.
+   - Testez le filtrage correct des messages en utilisant un mot-clé existant dans certains messages.
+   - Testez le cas où aucun message ne contient le mot-clé spécifié.
+   - Testez le cas où le mot-clé est une chaîne vide.
+
+### Classe MessageGenerator (Mise à jour) :
+
+```php
+class MessageGenerator {
+    // ...code
+
+    public function filterMessagesByKeyword($keyword) {
+        // ...code
+    }
+}
+```
+
+
 ## 03. Exercice: Créer un panier
 
 ### Partie 1: Première Classe
